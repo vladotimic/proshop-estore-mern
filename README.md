@@ -1,2 +1,3 @@
-# proshop-estore-mern
-MERN ProShop eCommerce store
+# MERN ProShop eCommerce store
+
+Project from Brad Traversy course MERN eCommerce ProShop store.
