@@ -26,8 +26,8 @@ const CartScreen = () => {
 
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.userLogin);
   const { cartItems } = cart;
-  console.log(cartItems);
 
   useEffect(() => {
     if (id) {
@@ -40,7 +40,8 @@ const CartScreen = () => {
   };
 
   const checkoutHandler = () => {
-    navigate('/login?redirect=shipping');
+    if (!userInfo) return navigate('/login');
+    navigate('/shipping');
   };
 
   return (
@@ -112,7 +113,7 @@ const CartScreen = () => {
                 disabled={cartItems.length === 0}
                 onClick={checkoutHandler}
               >
-                Proceed To Checkout{' '}
+                Proceed To Checkout
               </Button>
             </ListGroup.Item>
           </ListGroup>
