@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { Link, useParams } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderDetails } from '../actions/orderActions';
+import { getOrderDetails, payOrder } from '../actions/orderActions';
+import { ORDER_PAY_RESET } from '../constants/orderConstants';
 
 const OrderScreen = () => {
   const { id } = useParams();
@@ -13,7 +16,12 @@ const OrderScreen = () => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
-  if (!loading && !order) {
+  const [paypalId, setPaypalId] = useState('');
+
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
+
+  if (!loading && order) {
     // Calculate price
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
@@ -25,8 +33,17 @@ const OrderScreen = () => {
   }
 
   useEffect(() => {
-    dispatch(getOrderDetails(id));
-  }, [dispatch, id]);
+    const addPayPal = async () => {
+      const { data: clientId } = await axios.get('/api/config/paypal');
+      setPaypalId(clientId);
+    };
+    addPayPal();
+
+    if (order.length === 0 || successPay) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch(getOrderDetails(id));
+    }
+  }, [dispatch, id, successPay, order]);
 
   if (loading) return <Loader />;
   if (error) return <Message variant="danger">{error}</Message>;
@@ -140,6 +157,32 @@ const OrderScreen = () => {
               </ListGroup.Item>
             </ListGroup>
           </Card>
+          <div className="mt-3">
+            {!order.isPaid && (
+              <PayPalScriptProvider options={{ 'client-id': paypalId }}>
+                {loadingPay && <Loader />}
+                {!loadingPay && (
+                  <PayPalButtons
+                    createOrder={(data, actions) => {
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              value: order.totalPrice,
+                            },
+                          },
+                        ],
+                      });
+                    }}
+                    onApprove={async (data, actions) => {
+                      const res = await actions.order.capture();
+                      dispatch(payOrder(id, res));
+                    }}
+                  />
+                )}
+              </PayPalScriptProvider>
+            )}
+          </div>
         </Col>
       </Row>
     </>

@@ -2,6 +2,7 @@ import 'colors';
 import 'express-async-errors';
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import connectDB from './config/db.js';
 import productsRouter from './routes/productRoutes.js';
 import usersRouter from './routes/userRoutes.js';
@@ -13,6 +14,7 @@ connectDB();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('API is running...');
@@ -21,6 +23,10 @@ app.get('/', (req, res) => {
 app.use('/api/products', productsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/orders', ordersRouter);
+
+app.get('/api/config/paypal', (req, res) =>
+  res.send(process.env.PAYPAL_CLIENT_ID)
+);
 
 app.use(notFound);
 app.use(errorMiddleware);
