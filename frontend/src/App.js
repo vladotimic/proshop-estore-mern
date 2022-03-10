@@ -13,6 +13,7 @@ import Shipping from './screens/ShippingScreen';
 import Payment from './screens/PaymentScreen';
 import PlaceOrder from './screens/PlaceOrderScreen';
 import Order from './screens/OrderScreen';
+import UserList from './screens/UserListScreen';
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
               <Route path=":id" element={<Order />} />
               <Route path="" element={<Order />} />
             </Route>
+            <Route path="/admin/userlist" element={<UserList />} />
           </Routes>
         </Container>
       </main>

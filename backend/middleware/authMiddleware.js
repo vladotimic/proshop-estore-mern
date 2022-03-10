@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { StatusCodes } from 'http-status-codes';
 import User from '../models/User.js';
 
 const protect = async (req, res, next) => {
@@ -24,4 +25,13 @@ const protect = async (req, res, next) => {
   }
 };
 
-export { protect };
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(StatusCodes.UNAUTHORIZED);
+    throw new Error(`You're not authorized, only admin can access this route`);
+  }
+};
+
+export { protect, isAdmin };

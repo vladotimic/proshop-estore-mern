@@ -103,4 +103,19 @@ const registerUser = async (req, res) => {
   });
 };
 
-export { authUser, getUserProfile, updateUserProfile, registerUser };
+// @desc    Get all users
+// @route   GET /api/users
+// @access  Private/Admin
+const getUsers = async (req, res) => {
+  const users = await User.find({});
+  if (!users) {
+    res.status(StatusCodes.NOT_FOUND);
+    throw new Error('User not found');
+  }
+
+  res.status(StatusCodes.OK).json({
+    users,
+  });
+};
+
+export { authUser, getUserProfile, updateUserProfile, registerUser, getUsers };
