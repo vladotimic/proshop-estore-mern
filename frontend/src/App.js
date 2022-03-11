@@ -14,6 +14,7 @@ import Payment from './screens/PaymentScreen';
 import PlaceOrder from './screens/PlaceOrderScreen';
 import Order from './screens/OrderScreen';
 import UserList from './screens/UserListScreen';
+import UserEdit from './screens/UserEditScreen';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
               <Route path="" element={<Order />} />
             </Route>
             <Route path="/admin/userlist" element={<UserList />} />
+            <Route path="/admin/user/:id/edit" element={<UserEdit />} />
           </Routes>
         </Container>
       </main>
