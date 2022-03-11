@@ -15,6 +15,7 @@ import PlaceOrder from './screens/PlaceOrderScreen';
 import Order from './screens/OrderScreen';
 import UserList from './screens/UserListScreen';
 import UserEdit from './screens/UserEditScreen';
+import ProductList from './screens/ProductListScreen';
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
             </Route>
             <Route path="/admin/userlist" element={<UserList />} />
             <Route path="/admin/user/:id/edit" element={<UserEdit />} />
+            <Route path="/admin/productlist" element={<ProductList />} />
           </Routes>
         </Container>
       </main>
